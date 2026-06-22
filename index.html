@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Год вместе</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Italiana&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #1a0e14;
+  --bg-soft: #2a1820;
+  --cream: #f5ebe0;
+  --rose: #d4a5a5;
+  --rose-deep: #b87b7b;
+  --gold: #c9a96e;
+  --ink: #f5ebe0;
+  --ink-soft: rgba(245, 235, 224, 0.7);
+  --ink-faint: rgba(245, 235, 224, 0.4);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Background photos collage — scattered polaroids */
+.photo-bg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.bg-photo {
+  position: absolute;
+  background-size: cover;
+  background-position: center;
+  filter: sepia(0.2) saturate(0.85) brightness(0.55);
+  opacity: 0;
+  animation: photoFadeIn 1.5s ease-out forwards;
+  box-shadow: 
+    0 10px 40px rgba(0, 0, 0, 0.5),
+    0 0 0 6px rgba(245, 235, 224, 0.06);
+  border-radius: 2px;
+}
+
+@keyframes photoFadeIn {
+  to { opacity: 0.7; }
+}
+
+/* Vignette overlay so text stays readable */
+.vignette {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  background: 
+    radial-gradient(ellipse at center, rgba(26,14,20,0.4) 0%, rgba(26,14,20,0.85) 70%, rgba(26,14,20,0.95) 100%);
+}
+
+/* Floating petals animation */
+.petals {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.petal {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--rose);
+  border-radius: 100% 0 100% 0;
+  opacity: 0.35;
+  animation: fall linear infinite;
+  filter: blur(0.5px);
+}
+
+.petal:nth-child(odd) {
+  background: var(--rose-deep);
+  width: 8px;
+  height: 8px;
+}
+
+.petal:nth-child(3n) {
+  background: var(--gold);
+  opacity: 0.25;
+  width: 6px;
+  height: 6px;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(-10vh) rotate(0deg) translateX(0);
+    opacity: 0;
+  }
+  10% { opacity: 0.4; }
+  90% { opacity: 0.4; }
+  100% {
+    transform: translateY(110vh) rotate(720deg) translateX(100px);
+    opacity: 0;
+  }
+}
+
+/* Main container */
+.container {
+  position: relative;
+  z-index: 3;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 80px 24px 100px;
+}
+
+/* Hero */
+.hero {
+  text-align: center;
+  padding: 40px 0 60px;
+}
+
+.eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 400;
+  margin-bottom: 32px;
+  opacity: 0;
+  animation: fadeUp 1s ease-out 0.3s forwards;
+}
+
+.title {
+  font-family: 'Italiana', serif;
+  font-size: clamp(56px, 11vw, 120px);
+  font-weight: 400;
+  line-height: 0.95;
+  color: var(--cream);
+  letter-spacing: 0.01em;
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: fadeUp 1.4s ease-out 0.5s forwards;
+}
+
+.title em {
+  color: var(--rose);
+  font-style: italic;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+}
+
+.subtitle {
+  font-family: 'Italiana', serif;
+  font-size: clamp(18px, 2.5vw, 26px);
+  font-weight: 400;
+  color: var(--ink-soft);
+  letter-spacing: 0.05em;
+  margin-top: 20px;
+  opacity: 0;
+  animation: fadeUp 1.2s ease-out 0.7s forwards;
+}
+
+.subtitle .heart {
+  color: var(--rose);
+  display: inline-block;
+  animation: pulse 2s ease-in-out infinite;
+  margin-left: 6px;
+}
+
+/* Story section */
+.story {
+  margin: 80px 0;
+  text-align: center;
+  opacity: 0;
+  animation: fadeUp 1.2s ease-out 0.9s forwards;
+}
+
+.story-text {
+  font-family: 'Italiana', serif;
+  font-size: clamp(20px, 2.8vw, 28px);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--cream);
+  max-width: 640px;
+  margin: 0 auto;
+  letter-spacing: 0.02em;
+}
+
+.story-text .accent {
+  color: var(--rose);
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+}
+
+/* Riddle */
+.riddle {
+  margin: 100px 0 40px;
+  text-align: center;
+  opacity: 0;
+  animation: fadeUp 1.2s ease-out 1.1s forwards;
+}
+
+.riddle-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 28px;
+}
+
+.riddle-question {
+  font-family: 'Italiana', serif;
+  font-size: clamp(26px, 4.5vw, 42px);
+  font-weight: 400;
+  color: var(--cream);
+  margin-bottom: 44px;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+}
+
+.input-group {
+  max-width: 340px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.date-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rose-deep);
+  padding: 16px 8px;
+  font-family: 'Italiana', serif;
+  font-size: 24px;
+  color: var(--cream);
+  text-align: center;
+  letter-spacing: 0.15em;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.date-input:focus {
+  border-color: var(--rose);
+}
+
+.date-input::placeholder {
+  color: var(--ink-faint);
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 20px;
+  letter-spacing: 0.1em;
+}
+
+.submit-btn {
+  background: transparent;
+  border: 1px solid var(--rose);
+  color: var(--rose);
+  padding: 14px 32px;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 16px;
+}
+
+.submit-btn:hover {
+  background: var(--rose);
+  color: var(--bg);
+}
+
+.error {
+  color: var(--rose);
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 16px;
+  margin-top: 16px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  height: 24px;
+}
+
+.error.show {
+  opacity: 1;
+}
+
+/* Hint */
+.hint-wrapper {
+  margin-top: 80px;
+  text-align: center;
+  opacity: 0;
+  animation: fadeUp 1.2s ease-out 1.3s forwards;
+}
+
+.hint-trigger {
+  color: var(--ink-faint);
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  text-decoration: underline;
+  text-decoration-color: var(--ink-faint);
+  text-underline-offset: 4px;
+  transition: color 0.3s ease;
+  letter-spacing: 0.02em;
+}
+
+.hint-trigger:hover {
+  color: var(--rose);
+}
+
+.hint-text {
+  margin-top: 16px;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 17px;
+  color: var(--ink-soft);
+  max-width: 540px;
+  margin-left: auto;
+  margin-right: auto;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease, margin-top 0.5s ease;
+  line-height: 1.5;
+}
+
+.hint-text.show {
+  max-height: 200px;
+  margin-top: 20px;
+}
+
+/* Success screen */
+.success-screen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: var(--bg);
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+}
+
+.success-screen.show {
+  display: flex;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.success-content {
+  max-width: 560px;
+}
+
+.success-eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 28px;
+}
+
+.success-title {
+  font-family: 'Italiana', serif;
+  font-size: clamp(40px, 7vw, 68px);
+  font-weight: 400;
+  color: var(--cream);
+  line-height: 1.1;
+  margin-bottom: 28px;
+  letter-spacing: 0.02em;
+}
+
+.success-text {
+  font-family: 'Italiana', serif;
+  font-size: 22px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  margin-bottom: 44px;
+  letter-spacing: 0.03em;
+}
+
+.next-btn {
+  display: inline-block;
+  background: var(--rose);
+  color: var(--bg);
+  padding: 18px 40px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: 1px solid var(--rose);
+}
+
+.next-btn:hover {
+  background: transparent;
+  color: var(--rose);
+}
+
+/* Footer mark */
+.mark {
+  text-align: center;
+  margin-top: 100px;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink-faint);
+  opacity: 0;
+  animation: fadeUp 1.2s ease-out 1.5s forwards;
+  letter-spacing: 0.05em;
+}
+
+.mark .heart {
+  color: var(--rose);
+  display: inline-block;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .container { padding: 60px 20px 80px; }
+  .hint-text { font-size: 15px; }
+  
+  /* Меньше фоток на мобилке для производительности */
+  .bg-photo:nth-child(n+8) {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Background photo collage — scattered polaroids -->
+<div class="photo-bg" id="photoBg"></div>
+
+<!-- Vignette overlay for readability -->
+<div class="vignette"></div>
+
+<!-- Falling petals -->
+<div class="petals" id="petals"></div>
+
+<!-- Main content -->
+<div class="container">
+
+  <section class="hero">
+    <div class="eyebrow">23.06.2026 · Год вместе</div>
+    <h1 class="title">365 дней <em>нас</em></h1>
+    <p class="subtitle">Люблю тебя, любовь всей моей жизни <span class="heart">❤</span></p>
+  </section>
+
+  <section class="story">
+    <p class="story-text">
+      Год назад случился <span class="accent">наш день</span> — момент, который изменил всё. Сегодня я хочу, чтобы ты прошла маленький путь со мной.
+    </p>
+  </section>
+
+  <section class="riddle">
+    <div class="riddle-label">Шаг первый</div>
+    <h2 class="riddle-question">Введи нашу секретную дату</h2>
+    
+    <div class="input-group">
+      <input 
+        type="text" 
+        class="date-input" 
+        id="dateInput" 
+        placeholder="ДД.ММ.ГГГГ" 
+        maxlength="10"
+        autocomplete="off"
+      >
+      <button class="submit-btn" id="submitBtn">Дальше</button>
+      <div class="error" id="errorMsg">не та дата · попробуй ещё раз</div>
+    </div>
+  </section>
+
+  <section class="hint-wrapper">
+    <button class="hint-trigger" id="hintBtn">нужна подсказка?</button>
+    <div class="hint-text" id="hintText">
+      Это <em>тот самый день</em>, когда мы впервые сказали друг другу: «да». Год назад. Лето. Начало.
+    </div>
+  </section>
+
+  <div class="mark">
+    с любовью · <span class="heart">❤</span>
+  </div>
+
+</div>
+
+<!-- Success Screen -->
+<div class="success-screen" id="successScreen">
+  <div class="success-content">
+    <div class="success-eyebrow">Шаг пройден</div>
+    <h2 class="success-title">Ты помнишь.<br>Я люблю тебя.</h2>
+    <p class="success-text">
+      Это только начало. Следующий шаг ждёт тебя в Telegram.
+    </p>
+    <a href="https://t.me/loveyou_honey_bot" class="next-btn" id="nextBtn">
+      Открыть следующий шаг
+    </a>
+  </div>
+</div>
+
+<script>
+// ============================================
+// НАСТРОЙКИ — ИЗМЕНИ ПОД СЕБЯ
+// ============================================
+const SECRET_DATE = '23.06.2025';  // ← поменяй на вашу реальную дату начала отношений
+const BOT_USERNAME = 'loveyou_honey_bot';  // ← поменяй на имя бота без @
+
+// Список фотографий — лежат в папке photos/
+const PHOTOS = [
+  'photo01.webp',
+  'photo02.webp',
+  'photo03.webp',
+  'photo04.webp',
+  'photo05.webp',
+  'photo06.webp',
+  'photo07.webp',
+  'photo08.webp',
+  'photo09.webp',
+  'photo10.webp',
+  'photo11.webp',
+];
+// ============================================
+
+// Background photo collage — scattered polaroids
+function createPhotoCollage() {
+  const bg = document.getElementById('photoBg');
+  const isMobile = window.innerWidth < 600;
+  
+  // На десктопе раскладываем 11 фоток в сетке-разбросе
+  // На мобиле — будет 7 (через CSS hide остальных)
+  
+  // Заранее рассчитанные позиции для красивого разброса (не случайные —
+  // случайность даёт уродливые наложения)
+  const positions = [
+    { top: '5%',   left: '3%',   width: '200px', rotate: -8 },
+    { top: '8%',   left: '28%',  width: '180px', rotate: 6 },
+    { top: '2%',   left: '55%',  width: '220px', rotate: -12 },
+    { top: '6%',   left: '78%',  width: '190px', rotate: 9 },
+    { top: '32%',  left: '8%',   width: '210px', rotate: 11 },
+    { top: '35%',  left: '75%',  width: '200px', rotate: -7 },
+    { top: '58%',  left: '2%',   width: '180px', rotate: -5 },
+    { top: '62%',  left: '25%',  width: '210px', rotate: 14 },
+    { top: '60%',  left: '55%',  width: '195px', rotate: -10 },
+    { top: '65%',  left: '80%',  width: '185px', rotate: 8 },
+    { top: '85%',  left: '40%',  width: '200px', rotate: -6 },
+  ];
+  
+  PHOTOS.forEach((src, i) => {
+    if (!positions[i]) return;
+    const pos = positions[i];
+    const photo = document.createElement('div');
+    photo.className = 'bg-photo';
+    photo.style.top = pos.top;
+    photo.style.left = pos.left;
+    photo.style.width = pos.width;
+    photo.style.height = 'calc(' + pos.width + ' * 1.3)';  // соотношение 3:4
+    photo.style.backgroundImage = 'url(' + src + ')';
+    photo.style.transform = 'rotate(' + pos.rotate + 'deg)';
+    photo.style.animationDelay = (i * 0.15) + 's';
+    
+    // На мобиле — меньше и иначе расставить
+    if (isMobile) {
+      photo.style.width = '140px';
+      photo.style.height = '182px';
+    }
+    
+    bg.appendChild(photo);
+  });
+}
+
+// Petals generator
+function createPetals() {
+  const container = document.getElementById('petals');
+  const petalCount = window.innerWidth < 600 ? 12 : 20;
+  
+  for (let i = 0; i < petalCount; i++) {
+    const petal = document.createElement('div');
+    petal.className = 'petal';
+    petal.style.left = Math.random() * 100 + '%';
+    petal.style.animationDuration = (12 + Math.random() * 10) + 's';
+    petal.style.animationDelay = -Math.random() * 20 + 's';
+    container.appendChild(petal);
+  }
+}
+
+createPhotoCollage();
+createPetals();
+
+// Date input formatting
+const dateInput = document.getElementById('dateInput');
+const submitBtn = document.getElementById('submitBtn');
+const errorMsg = document.getElementById('errorMsg');
+const successScreen = document.getElementById('successScreen');
+const nextBtn = document.getElementById('nextBtn');
+const hintBtn = document.getElementById('hintBtn');
+const hintText = document.getElementById('hintText');
+
+// Update bot link
+nextBtn.href = 'https://t.me/' + BOT_USERNAME;
+
+dateInput.addEventListener('input', (e) => {
+  let value = e.target.value.replace(/\D/g, '');
+  if (value.length > 2) value = value.slice(0,2) + '.' + value.slice(2);
+  if (value.length > 5) value = value.slice(0,5) + '.' + value.slice(5,9);
+  e.target.value = value;
+  errorMsg.classList.remove('show');
+});
+
+function checkDate() {
+  const input = dateInput.value.trim();
+  if (input === SECRET_DATE) {
+    successScreen.classList.add('show');
+  } else {
+    errorMsg.classList.add('show');
+    dateInput.style.borderColor = 'var(--rose)';
+    setTimeout(() => {
+      dateInput.style.borderColor = '';
+    }, 1000);
+  }
+}
+
+submitBtn.addEventListener('click', checkDate);
+dateInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') checkDate();
+});
+
+hintBtn.addEventListener('click', () => {
+  hintText.classList.toggle('show');
+  hintBtn.textContent = hintText.classList.contains('show') 
+    ? 'спрятать подсказку' 
+    : 'нужна подсказка?';
+});
+
+</script>
+
+</body>
+</html>
